@@ -6,5 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class clientes extends Model
 {
-    //
+    protected $table = "clientes";
+
+    protected $fillable = [
+        'codigo_secreto', 'preferencia'
+    ];
+
+    public function misiones()
+    {
+        return $this->hasMany('App\Models\misiones');
+    }
 }

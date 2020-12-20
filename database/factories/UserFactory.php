@@ -3,6 +3,8 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\User;
+use App\Models\clientes;
+use App\Models\misiones;
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 
@@ -19,10 +21,31 @@ use Illuminate\Support\Str;
 
 $factory->define(User::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
+        'nombre' => $faker->name,
+        'rango' => $faker->randomElement($array = array('novato', 'soldado', 'veterano', 'maestro')),
+        'habilidades' => $faker->text,
+        'estado' => $faker->randomElement($array = array('activo', 'retirado', 'fallecido', 'desertor')),
         'email' => $faker->unique()->safeEmail,
-        'email_verified_at' => now(),
-        'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        'remember_token' => Str::random(10),
+    ];
+});
+
+$factory->define(clientes::class, function (Faker $faker) {
+    return [
+        'codigo_secreto' => $faker->bothify('??##??#??'),
+        'preferencia' => $faker->randomElement($array = array('VIP', 'normal')),
+    ];
+});
+
+$factory->define(misiones::class, function (Faker $faker) {
+    return   [
+        'descripcion' => $faker->text,
+        'cantidad_ninjas' => $faker->numberBetween($min = 1, $max = 5),
+        'prioridad' => $faker->randomElement($array = array('normal', 'urgente')),
+        'pago' => $faker->randomElement($array = array('Dinero', 'Reputacion')),
+        'estado' => $faker->randomElement($array = array('pendiente', 'en curso', 'completado', 'fallado')),
+        'fecha_finalizacion' => $faker->dateTimeInInterval($starDate = 'now', $interval = '+ 30 days', $timezone = null),
+        'cliente_id' => $faker->numberBetween($min = 1, $max = 20),
+
+
     ];
 });
