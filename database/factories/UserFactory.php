@@ -38,6 +38,7 @@ $factory->define(clientes::class, function (Faker $faker) {
 
 $factory->define(misiones::class, function (Faker $faker) {
     return   [
+        'codigo_mision' => $faker->bothify('??####?????#??'),
         'descripcion' => $faker->text,
         'cantidad_ninjas' => $faker->numberBetween($min = 1, $max = 5),
         'prioridad' => $faker->randomElement($array = array('normal', 'urgente')),

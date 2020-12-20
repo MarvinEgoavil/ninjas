@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
 use App\Models\clientes;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\misiones;
 
 class ClientesController extends Controller
 {
@@ -14,7 +17,48 @@ class ClientesController extends Controller
      */
     public function index()
     {
-        //
+        $consultaClientes = clientes::all();
+        $clientes = [];
+
+        foreach ($consultaClientes as $cliente) {
+            $hoy = Carbon::now();
+            $antiguedad = $hoy->diffForHumans($cliente->create_at);
+            $fecha = explode(" ", $antiguedad);
+            $numero = $fecha[0];
+            $tiempo = $fecha[1];
+
+            switch ($tiempo) {
+                case 'years':
+                    $tiempo = "Años";
+                    break;
+                case 'months':
+                    $tiempo = "Mes";
+                    break;
+                case 'weeks':
+                    $tiempo = "Semana";
+                    break;
+                case 'days':
+                    $tiempo = "Día";
+                    break;
+                case 'hours':
+                    $tiempo = "Hora";
+                    break;
+                case 'minutes':
+                    $tiempo = "Minuto";
+                    break;
+                case 'seconds':
+                    $tiempo = "Segundos";
+                    break;
+            }
+            $diferencia = "Hace " . $numero . " " . $tiempo;
+            $aux = [
+                'codigo' => $cliente->codigo_secreto,
+                'preferencia' => $cliente->prefererencia,
+                'antiguedad' => $diferencia,
+            ];
+            $clientes[] = $aux;
+        }
+        return $clientes;
     }
 
     /**
@@ -35,7 +79,11 @@ class ClientesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $clientes = new clientes();
+        $clientes->codigo_secreto = $request->codigo_secreto;
+        $clientes->preferencia = $request->preferencia;
+        $clientes->save();
+        return $clientes;
     }
 
     /**
@@ -44,9 +92,32 @@ class ClientesController extends Controller
      * @param  \App\Models\clientes  $clientes
      * @return \Illuminate\Http\Response
      */
-    public function show(clientes $clientes)
+    public function show($id)
     {
-        //
+        $ConsultaClientes = clientes::findOrFail($id);
+
+        $ConsultaMisiones = misiones::where('cliente_id', $id)->get();
+        $cliente = [];
+        $misiones = [];
+
+        foreach ($ConsultaMisiones as $mision) {
+
+            $aux = [
+                'codigo de la mision' => $mision->codigo_mision,
+                'prioridad' => $mision->prioridad,
+                'estado' => $mision->estado,
+                'fecha' => $mision->fecha_finalizacion,
+                'pago_acordado' => $mision->pago,
+            ];
+            $misiones[] = $aux;
+        }
+
+        $cliente = [
+            'codigo_secreto' => $ConsultaClientes->codigo_secreto,
+            'preferencia' => $ConsultaClientes->preferencia,
+            'misiones' => $misiones,
+        ];
+        return $cliente;
     }
 
     /**
@@ -67,9 +138,13 @@ class ClientesController extends Controller
      * @param  \App\Models\clientes  $clientes
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, clientes $clientes)
+    public function update(Request $request, $id)
     {
-        //
+        $clientes = clientes::findOrFail($id);
+        $clientes->codigo_secreto = $request->codigo_secreto;
+        $clientes->preferencia = $request->preferencia;
+        $clientes->save();
+        return $clientes;
     }
 
     /**

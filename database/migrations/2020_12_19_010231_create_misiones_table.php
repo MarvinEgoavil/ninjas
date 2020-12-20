@@ -15,7 +15,8 @@ class CreateMisionesTable extends Migration
     {
         Schema::create('misiones', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
+            $table->string('codigo_mision');
+            $table->string('descripcion');
             $table->Integer('cantidad_ninjas');
             $table->enum('prioridad', ['normal', 'urgente']);
             $table->string('pago');

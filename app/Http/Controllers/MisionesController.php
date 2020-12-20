@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\misiones;
 use Illuminate\Http\Request;
+use Faker\Generator as Faker;
+use App\User;
+
+
 
 class MisionesController extends Controller
 {
@@ -35,7 +39,22 @@ class MisionesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = User::findOrFail($request->cliente_id);
+
+        if ($user != null) {
+            $misiones = new misiones();
+            $misiones->codigo_mision = strtoupper(md5(uniqid(rand(), true)));
+            $misiones->descripcion = $request->descripcion;
+            $misiones->cantidad_ninjas = $request->cantidad_ninjas;
+            $misiones->prioridad = $request->prioridad;
+            $misiones->pago = $request->pago;
+            $misiones->estado = "pendiente";
+            $misiones->fecha_finalizacion = $request->fecha_finalizacion;
+            $misiones->cliente_id = $request->cliente_id;
+            $misiones->save();
+        }
+
+        return $misiones;
     }
 
     /**
