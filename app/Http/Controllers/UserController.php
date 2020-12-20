@@ -28,7 +28,27 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::findOrFail($id);
+        $ConsultaUser = User::findOrFail($id);
+        $ConsultaMisiones = misiones::where('cliente_id', $id)->get();
+        $misiones = [];
+        foreach ($ConsultaMisiones as $mision) {
+
+            $aux =  [
+                'codigo de la mision' => $mision->codigo_mision,
+                'prioridad' => $mision->prioridad,
+                'estado' => $mision->estado,
+                'fecha_finalizacion' => $mision->fecha_finalizacion,
+                'pago acordado' => $mision->pago,
+            ];
+            $misiones[] = $aux;
+        }
+        $user = [
+            'nombre' => $ConsultaUser->nombre,
+            'rango' => $ConsultaUser->rango,
+            'habilidades' => $ConsultaUser->habilidades,
+            'estado' => $ConsultaUser->estado,
+            'misiones' => $misiones,
+        ];
         return $user;
     }
 
