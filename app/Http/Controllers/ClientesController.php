@@ -53,7 +53,7 @@ class ClientesController extends Controller
             $diferencia = "Hace " . $numero . " " . $tiempo;
             $aux = [
                 'codigo_secreto' => $cliente->codigo_secreto,
-                'preferencia' => $cliente->prefererencia,
+                'preferencia' => $cliente->preferencia,
                 'antiguedad' => $diferencia,
             ];
             $clientes[] = $aux;
